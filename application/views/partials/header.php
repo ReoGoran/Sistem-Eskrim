@@ -22,7 +22,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" href="<?php echo site_url('products'); ?>"><i class="fa-solid fa-store"></i> Es Krim</a></li>
+        <li class="nav-item"><a class="nav-link" href="<?php echo site_url('products'); ?>"><i class="fa-solid fa-store"></i> Esss Krim</a></li>
         <li class="nav-item"><a class="nav-link" href="<?php echo site_url('blog'); ?>"><i class="fa-regular fa-newspaper"></i> Blog</a></li>
         <li class="nav-item"><a class="nav-link" href="<?php echo site_url('chat'); ?>"><i class="fa-regular fa-comments"></i> Chat</a></li>
       </ul>
