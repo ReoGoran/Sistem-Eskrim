@@ -7,6 +7,7 @@
     <div class="form-group col-md-3"><label>Harga</label><input name="price" type="number" class="form-control" value="<?php echo set_value('price'); ?>" required></div>
     <div class="form-group col-md-3"><label>Stok</label><input name="stock" type="number" class="form-control" value="<?php echo set_value('stock'); ?>" required></div>
   </div>
+  
   <div class="form-row">
     <div class="form-group col-md-6"><label>Rasa (boleh lebih dari satu)</label>
       <div class="border rounded p-2" style="max-height:180px;overflow:auto;">
@@ -20,8 +21,11 @@
         <?php endif; ?>
       </div>
     </div>
-    <div class="form-group col-md-3"><label>Popular</label><input type="checkbox" name="is_popular" value="1" <?php echo set_checkbox('is_popular','1'); ?>></div>
-    <div class="form-group col-md-3"><label>Discount</label><input type="checkbox" name="is_discount" value="1" <?php echo set_checkbox('is_discount','1'); ?>></div>
+    <div class="form-group col-md-3"><label>Popular</label>
+      <input type="hidden" name="is_popular" value="0">
+      <input type="checkbox" name="is_popular" value="1" <?php echo set_checkbox('is_popular','1', TRUE); ?>>
+    </div>
+  <div class="form-group col-md-3"><label>Discount</label><input type="checkbox" name="is_discount" value="1" <?php echo set_checkbox('is_discount','1'); ?>></div>
   </div>
   <div class="form-group"><label>Deskripsi</label><textarea name="description" class="form-control" rows="4"><?php echo set_value('description'); ?></textarea></div>
   <div class="form-group"><label>Gambar</label><input type="file" name="image" class="form-control-file"></div>

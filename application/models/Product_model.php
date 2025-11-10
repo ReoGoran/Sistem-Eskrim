@@ -19,12 +19,13 @@ class Product_model extends CI_Model {
             $this->db->or_like('description',$filters['search']);
             $this->db->group_end();
         }
+        // Make ORDER BY explicit to avoid ambiguous column when joins are present
         if(isset($filters['sort'])){
-            if($filters['sort']=='price_asc') $this->db->order_by('price','asc');
-            elseif($filters['sort']=='price_desc') $this->db->order_by('price','desc');
-            else $this->db->order_by('id','desc');
+            if($filters['sort']=='price_asc') $this->db->order_by('products.price','asc');
+            elseif($filters['sort']=='price_desc') $this->db->order_by('products.price','desc');
+            else $this->db->order_by('products.id','desc');
         } else {
-            $this->db->order_by('id','desc');
+            $this->db->order_by('products.id','desc');
         }
         return $this->db->get($this->table,$limit,$offset)->result();
     }

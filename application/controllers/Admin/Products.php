@@ -6,8 +6,8 @@ class Products extends CI_Controller {
     public function index(){ $data['products']=$this->Product_model->list(100,0,[]); $this->load->view('admin/partials/header'); $this->load->view('admin/products/index',$data); $this->load->view('admin/partials/footer'); }
     public function create(){
         $data = [];
-        $this->load->model('Flavor_model');
-        $data['flavors'] = $this->Flavor_model->all();
+    $this->load->model('Flavor_model');
+    $data['flavors'] = $this->Flavor_model->all();
         if($this->input->method()==='post'){
             $this->form_validation->set_error_delimiters('<div class="alert alert-danger">','</div>');
             $this->form_validation->set_rules('name','Name','required|min_length[3]');
@@ -50,6 +50,15 @@ class Products extends CI_Controller {
                         return;
                     }
                 }
+                // Determine is_popular: if admin explicitly set the checkbox use its value,
+                // otherwise default to 1 so newly created products appear on the site immediately.
+                $post_popular = $this->input->post('is_popular');
+                if ($post_popular === null) {
+                    $is_popular = 1; // default: new products are popular
+                } else {
+                    $is_popular = $post_popular ? 1 : 0;
+                }
+
                 $product_id = $this->Product_model->create([
                     'name'=>$this->input->post('name',TRUE),
                     'slug'=>url_title($this->input->post('name'),'dash',TRUE),
@@ -61,7 +70,7 @@ class Products extends CI_Controller {
                     // legacy single flavor kept for compatibility but optional
                     'flavor'=>$this->input->post('flavor',TRUE),
                     'is_discount'=>$this->input->post('is_discount')?1:0,
-                    'is_popular'=>$this->input->post('is_popular')?1:0,
+                    'is_popular'=>$is_popular,
                 ]);
                 // assign multiple flavors if provided
                 $selected = $this->input->post('flavor_ids') ?: [];
@@ -75,12 +84,14 @@ class Products extends CI_Controller {
     }
     public function edit($id){
     $p=$this->Product_model->get($id); if(!$p) show_404();
-    $this->load->model('Flavor_model');
+        $this->load->model('Flavor_model');
     $data['flavors_all']=$this->Flavor_model->all();
     $current=$this->Flavor_model->flavors_for_product($id);
     $data['flavor_ids']=array_map(function($r){return $r->id;}, $current);
         if($this->input->method()==='post'){
             $this->form_validation->set_error_delimiters('<div class="alert alert-danger">','</div>');
+            $is_popular = $this->input->post('is_popular')?1:0;
+
             $data=[
                 'name'=>$this->input->post('name',TRUE),
                 'description'=>$this->input->post('description',TRUE),
@@ -90,7 +101,7 @@ class Products extends CI_Controller {
                 'weight_kg'=>$p->weight_kg,
                 'flavor'=>$this->input->post('flavor',TRUE),
                 'is_discount'=>$this->input->post('is_discount')?1:0,
-                'is_popular'=>$this->input->post('is_popular')?1:0,
+                'is_popular'=>$is_popular,
             ];
             if(!empty($_FILES['image']['name'])){
                 $config=[

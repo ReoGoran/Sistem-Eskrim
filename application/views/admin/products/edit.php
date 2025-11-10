@@ -2,7 +2,6 @@
 <?php echo validation_errors('<div class="alert alert-danger">','</div>'); ?>
 <?php if(!empty($upload_error)): ?><div class="alert alert-danger"><?php echo $upload_error; ?></div><?php endif; ?>
 <?php echo form_open('admin/products/edit/'.$product->id, ['enctype'=>'multipart/form-data']); ?>
-  <div class="form-row">
   <div class="form-group col-md-6"><label>Nama Ice Cream</label><input name="name" class="form-control" value="<?php echo $product->name; ?>" required></div>
     <div class="form-group col-md-3"><label>Harga</label><input name="price" type="number" class="form-control" value="<?php echo $product->price; ?>" required></div>
     <div class="form-group col-md-3"><label>Stok</label><input name="stock" type="number" class="form-control" value="<?php echo $product->stock; ?>" required></div>
@@ -20,8 +19,13 @@
         <?php endif; ?>
       </div>
     </div>
-    <div class="form-group col-md-3"><label>Popular</label><input type="checkbox" name="is_popular" value="1" <?php echo $product->is_popular?'checked':''; ?>></div>
-    <div class="form-group col-md-3"><label>Discount</label><input type="checkbox" name="is_discount" value="1" <?php echo $product->is_discount?'checked':''; ?>></div>
+  <div class="form-row">
+  <div class="form-group col-md-3"><label>Popular</label>
+    <input type="hidden" name="is_popular" value="0">
+    <input type="checkbox" name="is_popular" value="1" <?php echo $product->is_popular?'checked':''; ?>>
+  </div>
+  <div class="form-group col-md-3"><label>Discount</label><input type="checkbox" name="is_discount" value="1" <?php echo $product->is_discount?'checked':''; ?>></div>
+  </div>
   </div>
   <div class="form-group"><label>Deskripsi</label><textarea name="description" class="form-control" rows="4"><?php echo $product->description; ?></textarea></div>
   <div class="form-group"><label>Gambar</label><input type="file" name="image" class="form-control-file"> <?php if($product->image): ?><img src="<?php echo $product->image; ?>" height="60"><?php endif; ?></div>

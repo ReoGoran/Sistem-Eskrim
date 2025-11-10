@@ -1,4 +1,8 @@
-<?php $this->load->model('Flavor_model'); $flavors_bar = $this->Flavor_model->all(); $currentFlavor = $this->input->get('flavor'); ?>
+<?php
+  // flavors should be provided by the controller; fall back to empty array if not set
+  $flavors_bar = isset($flavors_bar) ? $flavors_bar : [];
+  $currentFlavor = isset($currentFlavor) ? $currentFlavor : (isset($_GET['flavor'])?$_GET['flavor']:null);
+?>
 <div class="mb-3">
   <div class="d-flex flex-wrap flavor-bar mb-2">
     <?php foreach($flavors_bar as $f): ?>
@@ -28,21 +32,19 @@
     <button class="btn btn-outline-pink">Filter</button>
   </form>
 </div>
-<div class="row">
-  <?php foreach($products as $p): ?>
-  <div class="col-md-3 mb-3">
-    <div class="card h-100">
-  <img src="<?php echo base_url(ltrim($p->image,'/')); ?>" class="card-img-top" alt="<?php echo $p->name; ?>">
-      <div class="card-body d-flex flex-column">
-        <h6 class="card-title"><?php echo $p->name; ?></h6>
-        <div class="mt-auto d-flex justify-content-between align-items-center">
-          <span class="text-pink">Rp <?php echo number_format($p->price); ?></span>
-          <a href="<?php echo site_url('products/detail/'.$p->id); ?>" class="btn btn-sm btn-pink">Detail</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <?php endforeach; ?>
+<div class="row" id="productGrid">
+  <?php $this->load->view('products/_cards', ['products'=>$products]); ?>
+</div>
+<div id="productPagination">
+  <?php $pages = ceil($total/$limit); if($pages>1): ?>
+  <nav>
+    <ul class="pagination">
+      <?php for($i=1;$i<=$pages;$i++): $q=$_GET; $q['page']=$i; $qs=http_build_query($q); ?>
+        <li class="page-item <?php echo $i==$page?'active':''; ?>"><a class="page-link" href="?<?php echo $qs; ?>"><?php echo $i; ?></a></li>
+      <?php endfor; ?>
+    </ul>
+  </nav>
+  <?php endif; ?>
 </div>
 <?php $pages = ceil($total/$limit); if($pages>1): ?>
 <nav>
@@ -53,3 +55,43 @@
   </ul>
 </nav>
 <?php endif; ?>
+<script>
+document.addEventListener('click', function(e){
+  // handle flavor badge clicks and pagination links
+  var a = e.target.closest('a'); if(!a) return;
+  if(a.matches('.flavor-item') || a.closest('.flavor-item')){
+    e.preventDefault();
+    var href = a.getAttribute('href');
+    fetchFiltered(href);
+  }
+  if(a.matches('#productPagination .page-link')){
+    e.preventDefault();
+    var href = a.getAttribute('href');
+    fetchFiltered(href);
+  }
+});
+
+function fetchFiltered(href){
+  // convert href to query string
+  var url = href.indexOf('?')!==-1 ? href : (href + '') ;
+  // compute full endpoint
+  var endpoint = '<?php echo site_url('products/ajax_list'); ?>' + (url.indexOf('?')!==-1? url.substring(url.indexOf('?')) : '');
+  fetch(endpoint, {credentials:'same-origin'})
+    .then(function(r){ return r.text(); })
+    .then(function(html){
+      // split between cards and pagination if present
+      var temp = document.createElement('div'); temp.innerHTML = html;
+      // first, replace productGrid with first .col children
+      var cards = temp.querySelectorAll('.col-md-3');
+      var grid = document.getElementById('productGrid');
+      if(grid){ grid.innerHTML = ''; cards.forEach(function(c){ grid.appendChild(c); }); }
+      // replace pagination
+      var pag = temp.querySelector('nav');
+      var pagWrap = document.getElementById('productPagination');
+      if(pagWrap){ pagWrap.innerHTML = pag? pag.outerHTML : ''; }
+      // update URL
+      if(history && history.pushState){ history.pushState({}, '', endpoint.replace('<?php echo site_url('products/ajax_list'); ?>','<?php echo site_url('products'); ?>')); }
+    })
+    .catch(function(err){ console.error('Filter error', err); });
+}
+</script>
