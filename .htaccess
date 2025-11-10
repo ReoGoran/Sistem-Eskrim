@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # If the requested path is a real file or directory, serve it directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Otherwise, send to index.php
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
+
+# Fallback for when mod_rewrite is disabled
+<IfModule !mod_rewrite.c>
+    ErrorDocument 404 /index.php
+</IfModule>

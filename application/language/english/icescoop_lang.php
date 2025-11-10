@@ -1,0 +1,23 @@
+<?php
+$lang['app_title'] = 'IceScoop - Ice Cream E-commerce';
+$lang['login'] = 'Login';
+$lang['register'] = 'Register';
+$lang['logout'] = 'Logout';
+$lang['cart'] = 'Cart';
+$lang['checkout'] = 'Checkout';
+$lang['blog'] = 'Blog';
+$lang['notifications'] = 'Notifications';
+$lang['most_popular'] = 'Most Popular';
+$lang['all_flavors'] = 'All Flavors';
+$lang['add_to_cart'] = 'Add to Cart';
+$lang['make_order'] = 'Place Order';
+$lang['shipping'] = 'Shipping';
+$lang['subtotal'] = 'Subtotal';
+$lang['total'] = 'Total';
+$lang['order_tracking'] = 'Order Tracking';
+$lang['status'] = 'Status';
+$lang['placed'] = 'Placed';
+$lang['processed'] = 'Processed';
+$lang['shipped'] = 'Shipped';
+$lang['out_for_delivery'] = 'Out for delivery';
+$lang['delivered'] = 'Delivered';
